@@ -1,0 +1,77 @@
+name: Gemini Read Only Code Audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: Audit Y654 Project
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Gemini Code Audit
+        id: gemini_audit
+        uses: google-github-actions/run-gemini-cli@v0
+        with:
+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          upload_artifacts: false
+          prompt: |
+            Act as a senior software architect and software auditor.
+
+            Perform a comprehensive READ-ONLY audit of the
+            entire Y654 repository.
+
+            STRICT RULES:
+            - Do not edit or delete repository files.
+            - Do not create or rename repository files.
+            - Do not commit, push, or open pull requests.
+            - Do not install project dependencies unless necessary
+              and safe for inspection.
+            - Do not expose secrets, API keys, passwords or tokens.
+            - Inspect and report only.
+            - Do not claim a test passed unless it was executed.
+
+            AUDIT TASKS:
+
+            1. List the repository folders and files.
+            2. Identify missing required files.
+            3. Inspect Python syntax and imports.
+            4. Review requirements.txt and dependencies.
+            5. Review backend structure and architecture.
+            6. Identify API routes and endpoints.
+            7. Inspect PostgreSQL configuration.
+            8. Review database connection handling.
+            9. Inspect Render deployment configuration.
+            10. Check build and start commands.
+            11. Review security and secret handling.
+            12. Identify missing tests.
+            13. Run only safe, available read-only checks.
+            14. Identify deployment blockers.
+
+            REPORT FORMAT:
+
+            A. Project structure
+            B. Existing files
+            C. Missing files
+            D. Verified critical errors
+            E. Possible problems
+            F. Required corrections
+            G. Suggested new files
+            H. Backend readiness
+            I. Render deployment readiness
+            J. Tests actually executed and their results
+
+            Include file paths and line numbers wherever possible.
+            Clearly distinguish verified facts from assumptions.
+            Do not modify the repository.
+            Return a detailed Markdown report.
+            
