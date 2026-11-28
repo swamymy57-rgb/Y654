@@ -1,0 +1,79 @@
+
+name: Gemini Read Only Code Audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: Audit Y654 Project
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Gemini Code Audit
+        uses: google-github-actions/run-gemini-cli@v0
+        with:
+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          prompt: |
+            Act as a senior software architect.
+
+            Perform a complete READ-ONLY audit
+            of this entire Y654 repository.
+
+            STRICT RULES:
+            - Do not modify any files.
+            - Do not delete any files.
+            - Do not rename any files.
+            - Do not create files.
+            - Do not commit or push changes.
+            - Only inspect, analyze and report.
+
+            AUDIT THE FOLLOWING:
+
+            1. List all existing files and folders.
+            2. Find missing required files.
+            3. Check Python syntax errors.
+            4. Check broken imports.
+            5. Check requirements.txt dependencies.
+            6. Check backend architecture.
+            7. Check API routes and endpoints.
+            8. Check PostgreSQL configuration.
+            9. Check database connections.
+            10. Check Render deployment configuration.
+            11. Check build and start commands.
+            12. Check security issues.
+            13. Identify missing tests.
+            14. Check available tests where safe.
+
+            FINAL REPORT:
+
+            A. Project structure
+            B. Existing files
+            C. Missing files
+            D. Critical errors
+            E. Other problems
+            F. Required corrections
+            G. Suggested new files
+            H. Backend readiness
+            I. Render deployment readiness
+
+            Give file paths and line numbers
+            wherever possible.
+
+            Clearly distinguish verified errors
+            from possible problems.
+
+            Never claim a test passed unless
+            it was actually executed.
+
+            Return the complete report in Markdown.
+            
